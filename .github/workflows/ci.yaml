@@ -3,15 +3,6 @@ on:
   pull_request:
   push:
 jobs:
-  update_check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Setup Scala
-        uses: olafurpg/setup-scala@v10
-      - name: Up-to-date check
-        run: sbt "dependencyUpdates"
   test:
     runs-on: ubuntu-latest
     steps:
