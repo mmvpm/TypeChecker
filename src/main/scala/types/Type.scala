@@ -61,7 +61,7 @@ object Type {
             if (stack.isEmpty || stack.top.isLeft)
                 return
 
-            // gathering resultType from stack
+            // collecting resultType from the stack
             var resultType = stack.pop().right.get
             while (stack.nonEmpty && stack.top.isRight) {
                 val prevType = stack.pop.right.get
