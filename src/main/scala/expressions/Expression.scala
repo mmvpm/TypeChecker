@@ -29,7 +29,7 @@ object Expression {
         if (applicationOpt.nonEmpty)
             return applicationOpt
 
-        None
+        None // parsing fails
     }
 
     def trimBrackets(input: String): String = {

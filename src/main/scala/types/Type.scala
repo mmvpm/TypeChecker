@@ -15,13 +15,13 @@ object Type {
         // for easier parsing: "(a -> b) -> c -> d" => "(a>b)>c>d>"
         val updatedInput = input.filterNot(" -" contains _) + ">"
 
-        val stack = new SafeStack()
+        val stack = new SafeStack() // just for convenience
         val lastName = new StringBuilder()
 
         for (symbol <- updatedInput) {
             if ("(>)".contains(symbol) && lastName.nonEmpty) {
                 val name = lastName.toString()
-                stack.push(Right(TypeConstant(name)))
+                stack.push(Right(TypeConstant(name))) // new type constant
                 lastName.clear()
             }
             symbol match {
@@ -30,9 +30,9 @@ object Type {
                 case '>' =>
                     () // do nothing
                 case ')' =>
-                    stack.fold()
+                    stack.fold() // folding the stack before the first opening bracket
                     if (stack.safeTop.isEmpty)
-                        return None
+                        return None // parsing fails
                 case _ =>
                     lastName += symbol
             }
@@ -46,7 +46,7 @@ object Type {
 
     private class SafeStack() {
 
-        private val stack = mutable.Stack[Either[String, Type]]()
+        private val stack = mutable.Stack[Either[String, Type]]() // "(" or type
 
         def push(element: Either[String, Type]): Unit =
             stack.push(element)
@@ -61,6 +61,7 @@ object Type {
             if (stack.isEmpty || stack.top.isLeft)
                 return
 
+            // gathering resultType from stack
             var resultType = stack.pop().right.get
             while (stack.nonEmpty && stack.top.isRight) {
                 val prevType = stack.pop.right.get

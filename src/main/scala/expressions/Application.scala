@@ -27,7 +27,7 @@ object Application {
         if (updatedInput.length < 4) // min application example: "a b "
             return None
 
-        var bracketBalance = 0
+        var bracketBalance = 0 // checking for the balanced bracket sequence
         var preLastZeroBalance: Option[Int] = None
         var lastZeroBalance: Option[Int] = None
 
@@ -38,7 +38,7 @@ object Application {
                 case _ => () // do nothing
             }
             if (bracketBalance < 0)
-                return None
+                return None // incorrect brackets
 
             if (symbol == ' ' && bracketBalance == 0) {
                 preLastZeroBalance = lastZeroBalance
@@ -46,10 +46,13 @@ object Application {
             }
         }
         if (bracketBalance != 0)
-            return None
+            return None // incorrect brackets
 
+        // "(a b) c d"
+        //       ^ - `preLastZeroBalance`
         preLastZeroBalance.flatMap { index =>
             for {
+                // trying to parse both parts of the application
                 left <- Expression.fromString(
                     updatedInput.take(index + 1),
                     context

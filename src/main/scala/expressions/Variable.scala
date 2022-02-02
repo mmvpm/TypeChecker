@@ -23,6 +23,9 @@ object Variable {
         if (name.isEmpty)
             return None
 
+        if (name contains ' ')
+            return None
+
         context.get(name).map { `type` =>
             Variable(name, `type`)
         }

@@ -5,10 +5,15 @@ object Main extends App {
     val inputPrompt = s"Example: \"$example\"\nEnter lambda to check the type: "
 
     val input = scala.io.StdIn.readLine(inputPrompt)
+
     Expression
         .fromString(input)
-        .flatMap(_.getType) match {
-            case Some(value) => println(s"Type: $value")
-            case None => println("Type check failed")
-    }
+        .map(_.getType) match {
+            case Some(Some(value)) =>
+                println(s"Type: $value")
+            case Some(None) =>
+                println("Type check failed")
+            case None =>
+                println("Invalid expression")
+        }
 }
