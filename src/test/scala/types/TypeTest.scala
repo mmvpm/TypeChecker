@@ -6,19 +6,19 @@ class TypeTest extends AnyFlatSpec {
 
     "Type.fromString" should "parse valid input to Type" in new Wiring {
         val validTestCases = Map(
-            "a" -> tvA,
-            "A" -> tvbA,
-            "alpha" -> tvAlpha,
-            "Alpha" -> tvbAlpha,
-            "a -> b" -> TypeArrow(tvA, tvB),
-            "alpha -> beta" -> TypeArrow(tvAlpha, tvBeta),
-            "alpha -> (beta -> gamma)" -> TypeArrow(tvAlpha, TypeArrow(tvBeta, tvGamma)),
-            "(alpha -> beta) -> gamma" -> TypeArrow(TypeArrow(tvAlpha, tvBeta), tvGamma),
-            "(alpha -> beta -> gamma)" -> TypeArrow(tvAlpha, TypeArrow(tvBeta, tvGamma)),
-            "(a) -> (b) -> (a)" -> TypeArrow(tvA, TypeArrow(tvB, tvA)),
-            "(a -> (b -> c) -> a)" -> TypeArrow(tvA, TypeArrow(TypeArrow(tvB, tvC), tvA)),
-            "(a -> ((b -> c)) -> a)" -> TypeArrow(tvA, TypeArrow(TypeArrow(tvB, tvC), tvA)),
-            "a -> (a -> (a -> a)) -> a" -> TypeArrow(tvA, TypeArrow(TypeArrow(tvA, TypeArrow(tvA, tvA)), tvA))
+            "a" -> tcA,
+            "A" -> tcbA,
+            "alpha" -> tcAlpha,
+            "Alpha" -> tcbAlpha,
+            "a -> b" -> TypeArrow(tcA, tcB),
+            "alpha -> beta" -> TypeArrow(tcAlpha, tcBeta),
+            "alpha -> (beta -> gamma)" -> TypeArrow(tcAlpha, TypeArrow(tcBeta, tcGamma)),
+            "(alpha -> beta) -> gamma" -> TypeArrow(TypeArrow(tcAlpha, tcBeta), tcGamma),
+            "(alpha -> beta -> gamma)" -> TypeArrow(tcAlpha, TypeArrow(tcBeta, tcGamma)),
+            "(a) -> (b) -> (a)" -> TypeArrow(tcA, TypeArrow(tcB, tcA)),
+            "(a -> (b -> c) -> a)" -> TypeArrow(tcA, TypeArrow(TypeArrow(tcB, tcC), tcA)),
+            "(a -> ((b -> c)) -> a)" -> TypeArrow(tcA, TypeArrow(TypeArrow(tcB, tcC), tcA)),
+            "a -> (a -> (a -> a)) -> a" -> TypeArrow(tcA, TypeArrow(TypeArrow(tcA, TypeArrow(tcA, tcA)), tcA))
         )
 
         validTestCases.foreach { case (input, expected) =>
@@ -80,13 +80,13 @@ class TypeTest extends AnyFlatSpec {
     }
 
     trait Wiring {
-        val tvA = TypeVariable("a")
-        val tvbA = TypeVariable("A")
-        val tvB = TypeVariable("b")
-        val tvC = TypeVariable("c")
-        val tvAlpha = TypeVariable("alpha")
-        val tvbAlpha = TypeVariable("Alpha")
-        val tvBeta = TypeVariable("beta")
-        val tvGamma = TypeVariable("gamma")
+        val tcA = TypeConstant("a")
+        val tcbA = TypeConstant("A")
+        val tcB = TypeConstant("b")
+        val tcC = TypeConstant("c")
+        val tcAlpha = TypeConstant("alpha")
+        val tcbAlpha = TypeConstant("Alpha")
+        val tcBeta = TypeConstant("beta")
+        val tcGamma = TypeConstant("gamma")
     }
 }

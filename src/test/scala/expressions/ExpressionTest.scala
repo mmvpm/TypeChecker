@@ -81,16 +81,16 @@ class ExpressionTest extends AnyFlatSpec {
     }
 
     trait Wiring {
-        val tvA = TypeVariable("alpha")
-        val tvB = TypeVariable("beta")
-        val vA = Variable("a", tvA)
-        val vbA = Variable("A", tvA)
-        val vbAlpha = Variable("Alpha", tvA)
-        val vB = Variable("b", tvB)
-        val vF = Variable("f", TypeArrow(tvA, tvB))
-        val vG = Variable("g", TypeArrow(tvB, tvA))
-        val vT = Variable("t", TypeArrow(TypeArrow(tvA, tvB), tvA))
-        val vH = Variable("h", TypeArrow(tvA, TypeArrow(tvA, tvA)))
+        val tcA = TypeConstant("alpha")
+        val tcB = TypeConstant("beta")
+        val vA = Variable("a", tcA)
+        val vbA = Variable("A", tcA)
+        val vbAlpha = Variable("Alpha", tcA)
+        val vB = Variable("b", tcB)
+        val vF = Variable("f", TypeArrow(tcA, tcB))
+        val vG = Variable("g", TypeArrow(tcB, tcA))
+        val vT = Variable("t", TypeArrow(TypeArrow(tcA, tcB), tcA))
+        val vH = Variable("h", TypeArrow(tcA, TypeArrow(tcA, tcA)))
 
         // functions with short names for convenience
 

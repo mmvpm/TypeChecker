@@ -16,13 +16,13 @@ object Type {
         val updatedInput = input.filterNot(" -" contains _) + ">"
 
         val stack = new SafeStack()
-        val lastVariable = new StringBuilder()
+        val lastName = new StringBuilder()
 
         for (symbol <- updatedInput) {
-            if ("(>)".contains(symbol) && lastVariable.nonEmpty) {
-                val name = lastVariable.toString()
-                stack.push(Right(TypeVariable(name)))
-                lastVariable.clear()
+            if ("(>)".contains(symbol) && lastName.nonEmpty) {
+                val name = lastName.toString()
+                stack.push(Right(TypeConstant(name)))
+                lastName.clear()
             }
             symbol match {
                 case '(' =>
@@ -34,7 +34,7 @@ object Type {
                     if (stack.safeTop.isEmpty)
                         return None
                 case _ =>
-                    lastVariable += symbol
+                    lastName += symbol
             }
         }
 

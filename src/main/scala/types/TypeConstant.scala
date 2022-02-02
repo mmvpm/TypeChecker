@@ -1,6 +1,6 @@
 package types
 
-case class TypeVariable(name: String) extends Type {
+case class TypeConstant(name: String) extends Type {
 
     override def toString: String = name
 
