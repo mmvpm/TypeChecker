@@ -8,7 +8,7 @@ object Main extends App {
     Expression
         .fromString(input)
         .flatMap(_.getType) match {
-        case Some(value) => println(s"Type: $value")
-        case None => println("Type check failed")
+            case Some(value) => println(s"Type: $value")
+            case None => println("Type check failed")
     }
 }
