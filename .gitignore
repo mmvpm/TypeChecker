@@ -6,8 +6,8 @@
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
-# Hidden
+# IDE directories
 /.idea/
 /.bsp/
-# build
+# Build directories
 /target/
