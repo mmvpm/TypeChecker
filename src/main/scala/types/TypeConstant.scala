@@ -7,4 +7,6 @@ case class TypeConstant(name: String) extends Type {
     override def toStringWithBrackets: String = name
 
     override def applyTo(other: Type): Option[Type] = None
+
+    override def substitute(previous: TypeVariable, next: Type): Type = this
 }

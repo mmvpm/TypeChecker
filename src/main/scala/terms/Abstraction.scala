@@ -1,18 +1,18 @@
-package expressions
+package terms
 
 import types._
 
-case class Abstraction(variable: Variable, expression: Expression) extends Expression {
+case class Abstraction(variable: Variable, term: Term) extends Term {
+
+    override def toString: String = s"\\${variable.toStringTyped} . $term"
 
     override def toStringWithBrackets: String = s"($toString)"
 
-    override def toString: String = s"\\${variable.toStringTyped} . $expression"
-
     override def toStringVerbose: String =
-        s"Abstraction(${variable.toStringVerbose}, ${expression.toStringVerbose})"
+        s"Abstraction(${variable.toStringVerbose}, ${term.toStringVerbose})"
 
     override def getType: Option[Type] =
-        expression.getType.map { bodyType =>
+        term.getType.map { bodyType =>
             TypeArrow(variable.`type`, bodyType)
         }
 }
@@ -20,7 +20,7 @@ case class Abstraction(variable: Variable, expression: Expression) extends Expre
 object Abstraction {
 
     def fromString(input: String, context: Map[String, Type]): Option[Abstraction] = {
-        val updatedInput = Expression.trimBrackets(input)
+        val updatedInput = Term.trimBrackets(input)
 
         if (updatedInput.length < 6 || updatedInput(0) != '\\') // min abstraction example: "\a:a.a"
             return None
@@ -41,10 +41,10 @@ object Abstraction {
             variable = Variable(name, nameType)
             if !context.contains(name) // against double intro
             updatedContext = context + (name -> nameType)
-            expression <- Expression.fromString( // almost a recursive call
+            term <- Term.fromString( // almost a recursive call
                 bodyInput,
                 updatedContext
             )
-        } yield Abstraction(variable, expression)
+        } yield Abstraction(variable, term)
     }
 }

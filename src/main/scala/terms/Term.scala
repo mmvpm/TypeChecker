@@ -1,8 +1,8 @@
-package expressions
+package terms
 
 import types._
 
-abstract class Expression {
+abstract class Term {
 
     def getType: Option[Type]
 
@@ -11,10 +11,10 @@ abstract class Expression {
     def toStringVerbose: String
 }
 
-object Expression {
+object Term {
 
-    def fromString(input: String, context: Map[String, Type] = Map.empty): Option[Expression] = {
-        val updatedInput = Expression.trimBrackets(input)
+    def fromString(input: String, context: Map[String, Type] = Map.empty): Option[Term] = {
+        val updatedInput = Term.trimBrackets(input)
 
         // choose right constructor
         val abstractionOpt = Abstraction.fromString(updatedInput, context)

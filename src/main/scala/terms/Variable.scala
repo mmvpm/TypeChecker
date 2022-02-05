@@ -1,8 +1,8 @@
-package expressions
+package terms
 
 import types._
 
-case class Variable(name: String, `type`: Type) extends Expression {
+case class Variable(name: String, `type`: Type) extends Term {
 
     override def toString: String = name
 
@@ -18,7 +18,7 @@ case class Variable(name: String, `type`: Type) extends Expression {
 object Variable {
 
     def fromString(input: String, context: Map[String, Type]): Option[Variable] = {
-        val name = Expression.trimBrackets(input)
+        val name = Term.trimBrackets(input)
 
         if (name.isEmpty)
             return None

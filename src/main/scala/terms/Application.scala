@@ -1,12 +1,12 @@
-package expressions
+package terms
 
 import types._
 
-case class Application(left: Expression, right: Expression) extends Expression {
-
-    override def toStringWithBrackets: String = s"($toString)"
+case class Application(left: Term, right: Term) extends Term {
 
     override def toString: String = s"$left ${right.toStringWithBrackets}"
+
+    override def toStringWithBrackets: String = s"($toString)"
 
     override def toStringVerbose: String =
         s"Application(${left.toStringVerbose}, ${right.toStringVerbose})"
@@ -22,7 +22,7 @@ case class Application(left: Expression, right: Expression) extends Expression {
 object Application {
 
     def fromString(input: String, context: Map[String, Type]): Option[Application] = {
-        val updatedInput = Expression.trimBrackets(input) + " " // +1 `for` iteration
+        val updatedInput = Term.trimBrackets(input) + " " // +1 `for` iteration
 
         if (updatedInput.length < 4) // min application example: "a b "
             return None
@@ -53,11 +53,11 @@ object Application {
         preLastZeroBalance.flatMap { index =>
             for {
                 // trying to parse both parts of the application
-                left <- Expression.fromString(
+                left <- Term.fromString(
                     updatedInput.take(index + 1),
                     context
                 )
-                right <- Expression.fromString(
+                right <- Term.fromString(
                     updatedInput.takeRight(updatedInput.length - index - 1),
                     context
                 )

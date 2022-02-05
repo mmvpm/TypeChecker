@@ -7,6 +7,8 @@ abstract class Type {
     def applyTo(other: Type): Option[Type]
 
     def toStringWithBrackets: String
+
+    def substitute(previous: TypeVariable, next: Type): Type
 }
 
 object Type {

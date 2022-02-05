@@ -13,4 +13,10 @@ case class TypeArrow(left: Type, right: Type) extends Type {
             Some(right)
         else
             None
+
+    override def substitute(previous: TypeVariable, next: Type): Type =
+        TypeArrow(
+            left.substitute(previous, next),
+            right.substitute(previous, next)
+        )
 }

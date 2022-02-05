@@ -1,11 +1,12 @@
-package expressions
+package terms
 
 import org.scalatest.flatspec.AnyFlatSpec
+
 import types._
 
-class ExpressionTest extends AnyFlatSpec {
+class TermTest extends AnyFlatSpec {
 
-    "Expression.fromString" should "parse valid input to Expression" in new Wiring {
+    "Term.fromString" should "parse valid input to Term" in new Wiring {
         val validInputs = List(
             "\\a: alpha . a" -> lam(vA, vA),
             "\\A: alpha . A" -> lam(vbA, vbA),
@@ -19,12 +20,12 @@ class ExpressionTest extends AnyFlatSpec {
         )
 
         validInputs.foreach { case (input, expected) =>
-            val actualOpt = Expression.fromString(input)
+            val actualOpt = Term.fromString(input)
             assert(actualOpt contains expected)
         }
     }
 
-    "Expression.fromString" should "fail on invalid input" in new Wiring {
+    "Term.fromString" should "fail on invalid input" in new Wiring {
         val validInputs = List(
             "", // empty string
             "\\a: alpha . ", // no body
@@ -39,13 +40,13 @@ class ExpressionTest extends AnyFlatSpec {
         )
 
         validInputs.foreach { input =>
-            val actual = Expression.fromString(input)
+            val actual = Term.fromString(input)
             assert(actual.isEmpty)
         }
     }
 
-    "getType" should "inference the type by valid expression" in new Wiring {
-        val validExpressions: List[(Expression, Type)] = List(
+    "getType" should "inference the type by valid term" in new Wiring {
+        val validTerms: List[(Term, Type)] = List(
             ("\\a: alpha . a", "alpha -> alpha"),
             ("\\f: alpha -> beta . \\a: alpha . f a", "(alpha -> beta) -> alpha -> beta"),
             ("\\f: alpha -> beta . \\a: alpha . \\b: beta . f a", "(alpha -> beta) -> alpha -> beta -> beta"),
@@ -54,17 +55,17 @@ class ExpressionTest extends AnyFlatSpec {
             ("\\f: alpha -> beta . \\g: beta -> alpha . \\a: alpha . f (g (f a))", "(alpha -> beta) -> (beta -> alpha) -> alpha -> beta"),
             ("\\h: alpha -> alpha -> alpha . \\a: alpha . h (h a a) (h a a)", "(alpha -> alpha -> alpha) -> alpha -> alpha"),
         ).map { case (term, termType) =>
-            (Expression.fromString(term).get, Type.fromString(termType).get)
+            (Term.fromString(term).get, Type.fromString(termType).get)
         }
 
-        validExpressions.foreach { case (term, expectedType) =>
+        validTerms.foreach { case (term, expectedType) =>
             val actualTypeOpt = term.getType
             assert(actualTypeOpt contains expectedType)
         }
     }
 
-    "getType" should "fail on wrong expressions" in new Wiring {
-        val invalidExpressions: List[Expression] = List(
+    "getType" should "fail on wrong terms" in new Wiring {
+        val invalidTerms: List[Term] = List(
             "\\a: alpha . a a",
             "\\f: beta -> alpha . \\a: alpha . f a",
             "\\f: alpha -> beta . \\a: alpha . \\b: beta . f b",
@@ -72,9 +73,9 @@ class ExpressionTest extends AnyFlatSpec {
             "\\g: gamma -> alpha . \\f: alpha -> beta . \\a: alpha . g (f a)",
             "\\f: alpha -> beta . \\g: beta -> gamma . \\a: alpha . f (g (f a))",
             "\\h: alpha -> gamma -> alpha . \\a: alpha . h (h a a) (h a a)",
-        ).map(Expression.fromString(_).get)
+        ).map(Term.fromString(_).get)
 
-        invalidExpressions.foreach { term =>
+        invalidTerms.foreach { term =>
             val actualTypeOpt = term.getType
             assert(actualTypeOpt.isEmpty)
         }
@@ -94,10 +95,10 @@ class ExpressionTest extends AnyFlatSpec {
 
         // functions with short names for convenience
 
-        def lam(variable: Variable, expression: Expression): Abstraction =
-            Abstraction(variable, expression)
+        def lam(variable: Variable, term: Term): Abstraction =
+            Abstraction(variable, term)
 
-        def app(left: Expression, right: Expression): Application =
+        def app(left: Term, right: Term): Application =
             Application(left, right)
     }
 }
