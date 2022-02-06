@@ -4,11 +4,9 @@ import types._
 
 case class Application(left: Term, right: Term) extends Term {
 
-    override def toString: String = s"$left ${right.toStringWithBrackets}"
+    override def toString = s"$left ${right.toStringWithBrackets}"
 
-    override def toStringWithBrackets: String = s"($toString)"
-
-    override def toStringVerbose: String =
+    override def toStringVerbose =
         s"Application(${left.toStringVerbose}, ${right.toStringVerbose})"
 
     override def getType: Option[Type] =
@@ -21,47 +19,37 @@ case class Application(left: Term, right: Term) extends Term {
 
 object Application {
 
-    def fromString(input: String, context: Map[String, Type]): Option[Application] = {
-        val updatedInput = Term.trimBrackets(input) + " " // +1 `for` iteration
-
-        if (updatedInput.length < 4) // min application example: "a b "
+    def fromString(
+        input: String,
+        context: Map[String, Type],
+        typeVariables: Set[String]
+    ): Option[Term] = { // constructs Application or UniversalApplication
+        val updatedInput = util.trimBrackets(input)
+        if (!updatedInput.exists(" ~" contains _) || !util.isBalanced(updatedInput))
             return None
 
-        var bracketBalance = 0 // checking for the balanced bracket sequence
-        var preLastZeroBalance: Option[Int] = None
-        var lastZeroBalance: Option[Int] = None
-
-        for ((symbol, index) <- updatedInput.zipWithIndex) {
-            symbol match {
-                case '(' => bracketBalance += 1
-                case ')' => bracketBalance -= 1
-                case _ => () // do nothing
-            }
-            if (bracketBalance < 0)
-                return None // incorrect brackets
-
-            if (symbol == ' ' && bracketBalance == 0) {
-                preLastZeroBalance = lastZeroBalance
-                lastZeroBalance = Some(index)
-            }
-        }
-        if (bracketBalance != 0)
-            return None // incorrect brackets
-
-        // "(a b) c d"
-        //       ^ - `preLastZeroBalance`
-        preLastZeroBalance.flatMap { index =>
-            for {
-                // trying to parse both parts of the application
-                left <- Term.fromString(
-                    updatedInput.take(index + 1),
-                    context
-                )
-                right <- Term.fromString(
-                    updatedInput.takeRight(updatedInput.length - index - 1),
-                    context
-                )
-            } yield Application(left, right)
+        util.computeBalances(updatedInput).zipWithIndex.findLast { case (balance, index) =>
+            balance == 0 && index > 0 && (
+                // it's enough to check (i - 1)-th due to split & mkString in `Term.fromString`
+                updatedInput(index) == ' ' && updatedInput(index - 1) != '~' ||
+                updatedInput(index) == '~'
+            )
+        }.flatMap { case (_, index) =>
+            // trying to parse both parts of the (universal) application
+            val (left, right) = splitByIndex(updatedInput, index)
+            if (updatedInput(index) == '~')
+                for {
+                    leftTerm <- Term.fromString(left, context, typeVariables)
+                    rightType <- Type.fromString(right, typeVariables)
+                } yield UniversalApplication(leftTerm, rightType)
+            else // updatedInput(index) == ' '
+                for {
+                    leftTerm <- Term.fromString(left, context, typeVariables)
+                    rightTerm <- Term.fromString(right, context, typeVariables)
+                } yield Application(leftTerm, rightTerm)
         }
     }
+
+    private def splitByIndex(input: String, index: Int): (String, String) =
+        (input.take(index), input.takeRight(input.length - index - 1))
 }

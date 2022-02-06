@@ -6,6 +6,8 @@ case class TypeVariable(name: String) extends Type() {
 
     override def toStringWithBrackets: String = name
 
+    override def toStringVerbose = s"TypeVariable($name)"
+
     override def applyTo(other: Type): Option[Type] = None
 
     override def substitute(previous: TypeVariable, next: Type): Type =
@@ -13,4 +15,16 @@ case class TypeVariable(name: String) extends Type() {
             next
         else
             this
+}
+
+object TypeVariable {
+
+    def fromString(input: String, typeVariables: Set[String]): Option[TypeVariable] = {
+        val updatedInput = util.trimBrackets(input)
+
+        if (!typeVariables.contains(updatedInput))
+            return None // unknown type variable
+
+        Some(TypeVariable(updatedInput))
+    }
 }

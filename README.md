@@ -6,10 +6,17 @@ Type checker for polymorphic lambda calculus.
 
 ## Usage
 
-- run [main](https://github.com/IdeaSeeker/TypeChecker/blob/main/src/main/scala/Main.scala#L4) and enter the lambda term
-- input format: `\<variable> : <type> . <term>`
+- Run [main](https://github.com/IdeaSeeker/TypeChecker/blob/main/src/main/scala/Main.scala#L3) and enter the lambda term
+- Type syntax:
+  - Arrow type: `<type> => <type>`
+  - Universal type: `forall <type-variable> . <type>`
+- Term syntax:
+  - Abstraction: `\<variable>: <type> -> <term>`
+  - Application: `<term> <term>`
+  - Universal abstraction: `forall <type-variable> -> <term>`
+  - Universal application: `<term> ~ <type>`
 
 ## Example
 
-- input: `\f : alpha -> alpha . \x: alpha . f (f x)`
-- output: `Type: (alpha -> alpha) -> alpha -> alpha`
+- Input: `forall alpha -> \f: forall beta . beta => alpha -> \x: Bool -> f ~ Bool x`
+- Output: `Type: ∀alpha . (∀beta . beta => alpha) => Bool => alpha`

@@ -2,12 +2,36 @@ package types
 
 case class TypeAbstraction(typeVariable: TypeVariable, typeTerm: Type) extends Type() {
 
-    override def toString: String = s"forall $typeVariable . $typeTerm"
+    override def toString = s"∀$typeVariable . $typeTerm"
 
-    override def toStringWithBrackets: String = s"($toString)"
+    override def toStringVerbose =
+        s"TypeAbstraction(${typeVariable.toStringVerbose}, ${typeTerm.toStringVerbose})"
 
     override def applyTo(other: Type): Option[Type] = None
 
     override def substitute(previous: TypeVariable, next: Type): Type =
-        TypeAbstraction(typeVariable, typeTerm.substitute(previous, next))
+        if (previous == typeVariable)
+            typeTerm.substitute(previous, next)
+        else
+            TypeAbstraction(typeVariable, typeTerm.substitute(previous, next))
+}
+
+object TypeAbstraction {
+
+    def fromString(input: String, typeVariables: Set[String]): Option[TypeAbstraction] = {
+        val (name, typeInput) = util.trimBrackets(input) match {
+            case s"forall $name.$typeInput" =>
+                (name.trim, typeInput.trim)
+            case _ =>
+                return None
+        }
+        if (name.isEmpty || name.exists(".:-=>( )" contains _))
+            return None // invalid variable name
+        if (typeVariables.contains(name))
+            return None // double intro
+
+        Type.fromString(typeInput, typeVariables + name).map { `type` =>
+            TypeAbstraction(TypeVariable(name), `type`)
+        }
+    }
 }

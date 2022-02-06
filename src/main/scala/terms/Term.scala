@@ -6,37 +6,34 @@ abstract class Term {
 
     def getType: Option[Type]
 
-    def toStringWithBrackets: String
+    def toStringWithBrackets = s"($toString)"
 
     def toStringVerbose: String
 }
 
 object Term {
 
-    def fromString(input: String, context: Map[String, Type] = Map.empty): Option[Term] = {
-        val updatedInput = Term.trimBrackets(input)
-
-        // choose right constructor
-        val abstractionOpt = Abstraction.fromString(updatedInput, context)
-        if (abstractionOpt.nonEmpty)
-            return abstractionOpt
-
-        val variableOpt = Variable.fromString(updatedInput, context)
-        if (variableOpt.nonEmpty)
-            return variableOpt
-
-        val applicationOpt = Application.fromString(updatedInput, context)
-        if (applicationOpt.nonEmpty)
-            return applicationOpt
-
-        None // parsing fails
+    def fromString(input: String): Option[Term] = {
+        // removing double spaces
+        val updatedInput = input.split(' ').filter(_.nonEmpty).mkString(" ")
+        Term.fromString(updatedInput, Map.empty, Set.empty)
     }
 
-    def trimBrackets(input: String): String = {
-        val updatedInput = input.trim
-        if (updatedInput.nonEmpty && updatedInput(0) == '(' && updatedInput.last == ')')
-            updatedInput.drop(1).dropRight(1)
-        else
-            updatedInput
+    def fromString(
+        input: String,
+        context: Map[String, Type], // known variable name -> its type
+        typeVariables: Set[String] // known type variable names
+    ): Option[Term] = {
+        val updatedInput = util.trimBrackets(input)
+
+        // `Lazy` to not call other methods if `nonEmpty` has already been found
+        LazyList(
+            UniversalAbstraction.fromString _,
+            Abstraction.fromString _,
+            Variable.fromString _,
+            Application.fromString _,
+        ).map { constructor =>
+            constructor(updatedInput, context, typeVariables)
+        }.find(_.nonEmpty).flatten
     }
 }
