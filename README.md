@@ -2,21 +2,18 @@
 
 [![Build Status](https://github.com/IdeaSeeker/TypeChecker/workflows/CI/badge.svg)](https://github.com/IdeaSeeker/TypeChecker/actions)
 
-Type checker for polymorphic lambda calculus.
+Type checker for simply typed lambda calculus.
 
 ## Usage
 
-- Run [main](https://github.com/IdeaSeeker/TypeChecker/blob/main/src/main/scala/Main.scala#L3) and enter the lambda term
+- Run [main](https://github.com/IdeaSeeker/TypeChecker/blob/simply-typed/src/main/scala/Main.scala#L3) and enter the lambda term
 - Type syntax:
   - Arrow type: `<type> => <type>`
-  - Universal type: `forall <type-variable> . <type>`
 - Term syntax:
   - Abstraction: `\<variable>: <type> -> <term>`
   - Application: `<term> <term>`
-  - Universal abstraction: `forall <type-variable> -> <term>`
-  - Universal application: `<term> ~ <type>`
 
 ## Example
 
-- Input: `forall alpha -> \f: forall beta . beta => alpha -> \x: Bool -> f ~ Bool x`
-- Output: `Type: ∀alpha . (∀beta . beta => alpha) => Bool => alpha`
+- Input: `\f: alpha => alpha -> \a: alpha -> f (f a)`
+- Output: `Type: (alpha => alpha) => alpha => alpha`

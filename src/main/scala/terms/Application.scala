@@ -19,34 +19,20 @@ case class Application(left: Term, right: Term) extends Term {
 
 object Application {
 
-    def fromString(
-        input: String,
-        context: Map[String, Type],
-        typeVariables: Set[String]
-    ): Option[Term] = { // constructs Application or UniversalApplication
+    def fromString(input: String, context: Map[String, Type]): Option[Application] = {
         val updatedInput = util.trimBrackets(input)
-        if (!updatedInput.exists(" ~" contains _) || !util.isBalanced(updatedInput))
+        if (!updatedInput.exists(_ == ' ') || !util.isBalanced(updatedInput))
             return None
 
         util.computeBalances(updatedInput).zipWithIndex.findLast { case (balance, index) =>
-            balance == 0 && index > 0 && (
-                // it's enough to check (i - 1)-th due to split & mkString in `Term.fromString`
-                updatedInput(index) == ' ' && updatedInput(index - 1) != '~' ||
-                updatedInput(index) == '~'
-            )
+            balance == 0 && updatedInput(index) == ' '
         }.flatMap { case (_, index) =>
-            // trying to parse both parts of the (universal) application
+            // trying to parse both parts of the application
             val (left, right) = splitByIndex(updatedInput, index)
-            if (updatedInput(index) == '~')
-                for {
-                    leftTerm <- Term.fromString(left, context, typeVariables)
-                    rightType <- Type.fromString(right, typeVariables)
-                } yield UniversalApplication(leftTerm, rightType)
-            else // updatedInput(index) == ' '
-                for {
-                    leftTerm <- Term.fromString(left, context, typeVariables)
-                    rightTerm <- Term.fromString(right, context, typeVariables)
-                } yield Application(leftTerm, rightTerm)
+            for {
+                leftTerm <- Term.fromString(left, context)
+                rightTerm <- Term.fromString(right, context)
+            } yield Application(leftTerm, rightTerm)
         }
     }
 

@@ -9,19 +9,15 @@ case class TypeConstant(name: String) extends Type {
     override def toStringVerbose = s"TypeConstant($name)"
 
     override def applyTo(other: Type): Option[Type] = None
-
-    override def substitute(previous: TypeVariable, next: Type): Type = this
 }
 
 object TypeConstant {
 
-    def fromString(input: String, typeVariables: Set[String]): Option[TypeConstant] = {
+    def fromString(input: String): Option[TypeConstant] = {
         val updatedInput = util.trimBrackets(input)
 
         if (!util.validateName(updatedInput))
             return None // invalid name
-        if (typeVariables.contains(updatedInput))
-            return None // double intro
 
         Some(TypeConstant(updatedInput))
     }

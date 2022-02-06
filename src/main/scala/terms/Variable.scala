@@ -17,11 +17,7 @@ case class Variable(name: String, `type`: Type) extends Term {
 
 object Variable {
 
-    def fromString(
-        input: String,
-        context: Map[String, Type],
-        typeVariables: Set[String]
-    ): Option[Variable] = {
+    def fromString(input: String, context: Map[String, Type]): Option[Variable] = {
         val name = util.trimBrackets(input)
 
         context.get(name).map { `type` =>

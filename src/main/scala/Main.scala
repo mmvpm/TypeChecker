@@ -1,7 +1,7 @@
 import terms._
 
 object Main extends App {
-    val example = "forall alpha -> \\f: forall beta . beta => alpha -> \\x: Bool -> f ~ Bool x"
+    val example = "\\f: alpha => alpha -> \\a: alpha -> f (f a)"
     val inputPrompt = s"Example: \"$example\"\nEnter lambda to check the type: "
 
     val input = scala.io.StdIn.readLine(inputPrompt)

@@ -12,17 +12,11 @@ case class TypeArrow(left: Type, right: Type) extends Type {
             Some(right)
         else
             None
-
-    override def substitute(previous: TypeVariable, next: Type): Type =
-        TypeArrow(
-            left.substitute(previous, next),
-            right.substitute(previous, next)
-        )
 }
 
 object TypeArrow {
 
-    def fromString(input: String, typeVariables: Set[String]): Option[TypeArrow] = {
+    def fromString(input: String): Option[TypeArrow] = {
         val updatedInput = util.trimBrackets(input)
         if (!input.contains("=>") || !util.isBalanced(updatedInput))
             return None
@@ -33,8 +27,8 @@ object TypeArrow {
             // trying to parse both parts of the type arrow
             val (left, right) = splitByIndex(updatedInput, index)
             for {
-                leftType <- Type.fromString(left, typeVariables)
-                rightType <- Type.fromString(right, typeVariables)
+                leftType <- Type.fromString(left)
+                rightType <- Type.fromString(right)
             } yield TypeArrow(leftType, rightType)
         }
     }

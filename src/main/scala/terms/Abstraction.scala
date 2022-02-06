@@ -17,11 +17,7 @@ case class Abstraction(variable: Variable, term: Term) extends Term {
 
 object Abstraction {
 
-    def fromString(
-        input: String,
-        context: Map[String, Type],
-        typeVariables: Set[String]
-    ): Option[Abstraction] = {
+    def fromString(input: String, context: Map[String, Type]): Option[Abstraction] = {
         val (name, typeInput, bodyInput) = util.trimBrackets(input) match {
             case s"""\$name:$typeInput->$bodyInput""" =>
                 (name.trim, typeInput.trim, bodyInput.trim)
@@ -32,11 +28,11 @@ object Abstraction {
             return None // invalid name
 
         for {
-            nameType <- Type.fromString(typeInput, typeVariables)
+            nameType <- Type.fromString(typeInput)
             variable = Variable(name, nameType)
             if !context.contains(name) // double intro
             updatedContext = context + (name -> nameType)
-            term <- Term.fromString(bodyInput, updatedContext, typeVariables)
+            term <- Term.fromString(bodyInput, updatedContext)
         } yield Abstraction(variable, term)
     }
 }
