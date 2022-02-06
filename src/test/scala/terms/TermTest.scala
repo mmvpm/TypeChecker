@@ -84,12 +84,10 @@ class TermTest extends AnyFlatSpec {
     trait Wiring {
         val tcA = TypeConstant("alpha")
         val tcB = TypeConstant("beta")
-        val tcM = TypeConstant("mu")
         val vA = Variable("a", tcA)
         val vbA = Variable("A", tcA)
         val vbAlpha = Variable("Alpha", tcA)
         val vB = Variable("b", tcB)
-        val vM = Variable("m", tcM)
         val vF = Variable("f", TypeArrow(tcA, tcB))
         val vG = Variable("g", TypeArrow(tcB, tcA))
         val vT = Variable("t", TypeArrow(TypeArrow(tcA, tcB), tcA))

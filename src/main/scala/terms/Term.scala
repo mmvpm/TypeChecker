@@ -4,11 +4,11 @@ import types._
 
 abstract class Term {
 
-    def getType: Option[Type]
-
     def toStringWithBrackets = s"($toString)"
 
     def toStringVerbose: String
+
+    def getType: Option[Type]
 }
 
 object Term {
