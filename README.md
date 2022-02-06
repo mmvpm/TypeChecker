@@ -6,6 +6,7 @@ Type checker for polymorphic lambda calculus.
 
 ## Usage
 
+- Open the project with Intellij IDEA
 - Run [main](https://github.com/IdeaSeeker/TypeChecker/blob/system-f/src/main/scala/Main.scala#L3) and enter the lambda term
 - Type syntax:
   - Arrow type: `<type> => <type>`
