@@ -2,6 +2,9 @@ import scala.collection.mutable
 
 package object util {
 
+    def validateName(name: String): Boolean =
+        name.nonEmpty && !name.exists(".:-=>( )" contains _)
+
     def trimBrackets(input: String): String = {
         val updatedInput = input.trim
         if (updatedInput.isEmpty)

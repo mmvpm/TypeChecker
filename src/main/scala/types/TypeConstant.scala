@@ -18,8 +18,8 @@ object TypeConstant {
     def fromString(input: String, typeVariables: Set[String]): Option[TypeConstant] = {
         val updatedInput = util.trimBrackets(input)
 
-        if (updatedInput.isEmpty || updatedInput.exists(".:-=>( )" contains _))
-            return None // invalid input
+        if (!util.validateName(updatedInput))
+            return None // invalid name
         if (typeVariables.contains(updatedInput))
             return None // double intro
 

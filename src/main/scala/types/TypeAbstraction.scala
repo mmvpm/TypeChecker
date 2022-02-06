@@ -25,8 +25,8 @@ object TypeAbstraction {
             case _ =>
                 return None
         }
-        if (name.isEmpty || name.exists(".:-=>( )" contains _))
-            return None // invalid variable name
+        if (!util.validateName(name))
+            return None // invalid name
         if (typeVariables.contains(name))
             return None // double intro
 

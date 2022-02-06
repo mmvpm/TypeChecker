@@ -28,7 +28,7 @@ object UniversalAbstraction {
             case _ =>
                 return None
         }
-        if (name.isEmpty || name.exists(".:-=>( )" contains _))
+        if (!util.validateName(name))
             return None // invalid name
         if (typeVariables.contains(name))
             return None // double intro
