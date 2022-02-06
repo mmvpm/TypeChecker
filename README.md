@@ -6,7 +6,7 @@ Type checker for simply typed lambda calculus.
 
 ## Usage
 
-- Run [main](https://github.com/IdeaSeeker/TypeChecker/blob/simply-typed/src/main/scala/Main.scala#L3) and enter the lambda term
+- Open the project with Intellij IDEA and run [main](https://github.com/IdeaSeeker/TypeChecker/blob/simply-typed/src/main/scala/Main.scala#L3) and enter the lambda term
 - Type syntax:
   - Arrow type: `<type> => <type>`
 - Term syntax:
